@@ -3,9 +3,9 @@ import Employee from "../models/Employee.js";
 
 const router = express.Router();
 
-/* =========================
+/* ==========================================================================
    GET ALL EMPLOYEES
-========================= */
+   ========================================================================== */
 router.get("/", async (req, res) => {
   try {
     const employees = await Employee.find();
@@ -15,9 +15,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-/* =========================
+/* ==========================================================================
    SEARCH EMPLOYEES (NAME / DIN)
-========================= */
+   ========================================================================== */
 router.get("/search", async (req, res) => {
   try {
     const query = (req.query.query || "").trim();
@@ -37,15 +37,14 @@ router.get("/search", async (req, res) => {
   }
 });
 
-/* =========================
+/* ==========================================================================
    COMPANY DROPDOWN SEARCH
-========================= */
+   ========================================================================== */
 router.get("/companies/search", async (req, res) => {
   try {
     const query = (req.query.query || "").trim().toLowerCase();
 
     const employees = await Employee.find();
-
     const companyMap = new Map();
 
     employees.forEach((emp) => {
@@ -73,13 +72,12 @@ router.get("/companies/search", async (req, res) => {
   }
 });
 
-/* =========================
-   COMPANY DETAILS (FIXED)
-========================= */
+/* ==========================================================================
+   COMPANY DETAILS
+   ========================================================================== */
 router.get("/company/:companyName", async (req, res) => {
   try {
     const companyName = req.params.companyName.trim().toLowerCase();
-
     const employees = await Employee.find();
 
     if (!employees.length) {
@@ -133,18 +131,31 @@ router.get("/company/:companyName", async (req, res) => {
   }
 });
 
-/* =========================
-   DIRECTOR PROFILE
-========================= */
+/* ==========================================================================
+   DIRECTOR PROFILE (UPDATED WITH STRING NAME FALLBACK)
+   ========================================================================== */
 router.get("/director/:id", async (req, res) => {
   try {
-    const employee = await Employee.findById(req.params.id);
+    const paramId = req.params.id.trim();
 
-    if (!employee) {
+    // 1st Pass: Try to find using standard MongoDB Object ID
+    if (paramId.match(/^[0-9a-fA-F]{24}$/)) {
+      const employee = await Employee.findById(paramId);
+      if (employee) {
+        return res.json(employee);
+      }
+    }
+
+    // 2nd Pass Fallback: If parameter is a plain-text name string (e.g. from manual search bar inputs)
+    const employeeByName = await Employee.findOne({
+      name: { $regex: `^${paramId}$`, $options: "i" }
+    });
+
+    if (!employeeByName) {
       return res.status(404).json({ message: "Director not found" });
     }
 
-    res.json(employee);
+    res.json(employeeByName);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
