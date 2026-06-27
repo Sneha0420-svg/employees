@@ -12,10 +12,40 @@ function CompanyDetails() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Autocomplete Suggestion States
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const dropdownRef = useRef(null);
+
+  // 🔹 NEW HELPER: Ensures website URLs always open externally and don't route back to your project
+  const formatExternalUrl = (url, companyName) => {
+    if (!url || url.trim() === "" || url === "N/A") {
+      return `https://www.google.com/search?q=${encodeURIComponent(companyName + ' official website')}`;
+    }
+    const cleanUrl = url.trim();
+    // If it doesn't start with http:// or https://, prepend https://
+    if (/^https?:\/\//i.test(cleanUrl)) {
+      return cleanUrl;
+    }
+    return `https://${cleanUrl}`;
+  };
+
+  const formatMonthYear = (dateStr) => {
+    if (!dateStr || dateStr === "N/A") return "N/A";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      const parts = dateStr.split(/[-/]/);
+      if (parts.length === 3) {
+        const parsedObj = parts[0].length === 4 
+          ? new Date(parts[0], parts[1] - 1, parts[2])
+          : new Date(parts[2], parts[1] - 1, parts[0]);
+        if (!isNaN(parsedObj.getTime())) {
+          return parsedObj.toLocaleString("default", { month: "short", year: "numeric" });
+        }
+      }
+      return dateStr; 
+    }
+    return date.toLocaleString("default", { month: "short", year: "numeric" });
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -83,7 +113,7 @@ function CompanyDetails() {
         cin: "N/A",
         registerNo: "N/A",
         category: "N/A",
-        website: "", // 🌐 Added to store company website link
+        website: "",
         activeEmployees: [],
       };
 
@@ -104,8 +134,7 @@ function CompanyDetails() {
           companyData.cin = company.cin || "N/A";
           companyData.registerNo = company.registerNo || "N/A";
           companyData.category = company.industry || "N/A";
-          // Fallback check to find website URL from backend payload schema
-          companyData.website = company.website || company.officialWebsite || `https://www.google.com/search?q=${encodeURIComponent(company.companyName + ' official website')}`;
+          companyData.website = company.website || company.officialWebsite || "";
         }
 
         emp.careerHistory?.forEach((career) => {
@@ -155,7 +184,7 @@ function CompanyDetails() {
         <h1 style={{ margin: 0, fontSize: "2.5rem" }}>Company Information Portal</h1>
       </div>
 
-      {/* SEARCH BOX */}
+      {/* SEARCH INTERFACE */}
       <div ref={dropdownRef} style={{ display: "flex", justifyContent: "center", marginBottom: "30px", gap: "10px", position: "relative" }}>
         <div style={{ position: "relative" }}>
           <input
@@ -181,10 +210,7 @@ function CompanyDetails() {
                     setShowSuggestions(false);
                     searchCompany(item.name);
                   }}
-                  style={{
-                    padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px",
-                    borderBottom: index !== suggestions.length - 1 ? "1px solid #f1f5f9" : "none", fontSize: "0.95rem"
-                  }}
+                  style={{ padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px", borderBottom: index !== suggestions.length - 1 ? "1px solid #f1f5f9" : "none", fontSize: "0.95rem" }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                 >
@@ -221,32 +247,20 @@ function CompanyDetails() {
           <div style={{ border: "1px solid #e5e7eb", borderRadius: "12px", padding: "24px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", background: "#fff" }}>
             <h2 style={{ marginTop: 0, borderBottom: "1px solid #e5e7eb", paddingBottom: "12px", color: "#1f2937" }}>Company Information</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontSize: "1.1rem", marginTop: "16px" }}>
-              
-              {/* 🌐 HIGHLIGHTED COMPANY NAME CLICKS OUT TO EXTERNAL OFFICIAL WEBSITE */}
               <p style={{ margin: 0 }}>
                 <strong>Name:</strong>{" "}
+                {/* 🔹 FIXED ANCHOR LINK (Uses our external safety formatter tool) */}
                 <a 
-                  href={selectedCompany.website} 
+                  href={formatExternalUrl(selectedCompany.website, selectedCompany.name)} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ 
-                    background: "#eff6ff", 
-                    color: "#1e40af", 
-                    padding: "4px 10px", 
-                    borderRadius: "6px", 
-                    fontWeight: "700",
-                    display: "inline-block",
-                    textDecoration: "none", // Keeps lines away
-                    cursor: "pointer"
-                  }}
+                  style={{ background: "#eff6ff", color: "#1e40af", padding: "4px 10px", borderRadius: "6px", fontWeight: "700", display: "inline-block", textDecoration: "none", cursor: "pointer" }}
                   onMouseEnter={(e) => e.target.style.background = "#dbeafe"}
                   onMouseLeave={(e) => e.target.style.background = "#eff6ff"}
-                  title={`Visit official website for ${selectedCompany.name}`}
                 >
                   {selectedCompany.name} 🔗
                 </a>
               </p>
-
               <p style={{ margin: 0 }}><strong>CIN:</strong> <span style={{ color: "#4b5563" }}>{selectedCompany.cin}</span></p>
               <p style={{ margin: 0 }}><strong>Register No:</strong> <span style={{ color: "#4b5563" }}>{selectedCompany.registerNo}</span></p>
               <p style={{ margin: 0 }}><strong>Category:</strong> <span style={{ color: "#4b5563" }}>{selectedCompany.category}</span></p>
@@ -275,7 +289,7 @@ function CompanyDetails() {
                     </td>
                     <td style={{ padding: "14px", color: "#4b5563" }}>{emp.din || "N/A"}</td>
                     <td style={{ padding: "14px", color: "#4b5563" }}>{emp.designation || "N/A"}</td>
-                    <td style={{ padding: "14px", color: "#4b5563" }}>{emp.appointmentDate || "N/A"}</td>
+                    <td style={{ padding: "14px", color: "#4b5563" }}>{formatMonthYear(emp.appointmentDate)}</td>
                   </tr>
                 ))}
               </tbody>

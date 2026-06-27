@@ -12,10 +12,51 @@ function DirectorsPage() {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
 
-  // Autocomplete Suggestion States
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const dropdownRef = useRef(null);
+
+  // Helper function to format dates to "MMM YYYY"
+  const formatMonthYear = (dateStr) => {
+    if (!dateStr || dateStr === "N/A" || dateStr === "Present") return dateStr || "N/A";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      const parts = dateStr.split(/[-/]/);
+      if (parts.length === 3) {
+        const parsedObj = parts[0].length === 4 
+          ? new Date(parts[0], parts[1] - 1, parts[2])
+          : new Date(parts[2], parts[1] - 1, parts[0]);
+        if (!isNaN(parsedObj.getTime())) {
+          return parsedObj.toLocaleString("default", { month: "short", year: "numeric" });
+        }
+      }
+      return dateStr;
+    }
+    return date.toLocaleString("default", { month: "short", year: "numeric" });
+  };
+
+  // TWO-LEVEL SORT: Active first, then sort each group from Current to Past
+  const getSortedCareerHistory = (historyArray) => {
+    if (!historyArray) return [];
+    
+    return [...historyArray].sort((a, b) => {
+      const statusA = a.status?.toLowerCase();
+      const statusB = b.status?.toLowerCase();
+      const isActiveA = statusA === "active" || statusA === "present";
+      const isActiveB = statusB === "active" || statusB === "present";
+
+      if (isActiveA && !isActiveB) return -1;
+      if (!isActiveA && isActiveB) return 1;
+
+      const dateA = new Date(a.joiningDate);
+      const dateB = new Date(b.joiningDate);
+      
+      const timeA = isNaN(dateA.getTime()) ? 0 : dateA.getTime();
+      const timeB = isNaN(dateB.getTime()) ? 0 : dateB.getTime();
+
+      return timeB - timeA; 
+    });
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -100,20 +141,16 @@ function DirectorsPage() {
     }
   }, [id, location.state]);
 
-  const handleSearch = () => {
-    searchDirector(query);
-  };
-
   return (
     <div style={{ padding: "24px", fontFamily: "sans-serif", maxWidth: "1200px", margin: "0 auto" }}>
       
-      {/* SEARCH CONTAINER */}
+      {/* SEARCH SYSTEM */}
       <div ref={dropdownRef} style={{ display: "flex", gap: "10px", marginBottom: "30px", alignItems: "center", position: "relative" }}>
         <div style={{ position: "relative" }}>
           <input
             value={query}
             onChange={(e) => handleTyping(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            onKeyDown={(e) => e.key === "Enter" && searchDirector(query)}
             onFocus={() => query.trim() && setShowSuggestions(true)}
             placeholder="Search director name or DIN..."
             style={{ width: "320px", padding: "10px 14px", border: "1px solid #cbd5e1", borderRadius: "6px", fontSize: "1rem" }}
@@ -133,10 +170,7 @@ function DirectorsPage() {
                     setShowSuggestions(false);
                     searchDirector(item.id);
                   }}
-                  style={{
-                    padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px",
-                    borderBottom: index !== suggestions.length - 1 ? "1px solid #f1f5f9" : "none", fontSize: "0.95rem"
-                  }}
+                  style={{ padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px", borderBottom: index !== suggestions.length - 1 ? "1px solid #f1f5f9" : "none", fontSize: "0.95rem" }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f8fafc"}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                 >
@@ -151,10 +185,7 @@ function DirectorsPage() {
           )}
         </div>
 
-        <button
-          onClick={handleSearch}
-          style={{ background: "#2563eb", color: "white", border: "none", padding: "10px 24px", borderRadius: "6px", cursor: "pointer", fontSize: "1rem", fontWeight: "500", height: "42px" }}
-        >
+        <button onClick={() => searchDirector(query)} style={{ background: "#2563eb", color: "white", border: "none", padding: "10px 24px", borderRadius: "6px", cursor: "pointer", fontSize: "1rem", fontWeight: "500", height: "42px" }}>
           Search
         </button>
       </div>
@@ -165,9 +196,7 @@ function DirectorsPage() {
       {director && (
         <div style={{ background: "#ffffff", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0", overflow: "hidden" }}>
           <div style={{ background: "#4c1d95", color: "white", padding: "32px", display: "flex", alignItems: "center", gap: "20px" }}>
-            <div style={{ width: "64px", height: "64px", background: "rgba(255,255,255,0.2)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>
-              👤
-            </div>
+            <div style={{ width: "64px", height: "64px", background: "rgba(255,255,255,0.2)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>👤</div>
             <div>
               <h1 style={{ margin: 0, fontSize: "2rem", fontWeight: "700" }}>Directors Page</h1>
               <p style={{ margin: "4px 0 0 0", color: "#ddd6fe", fontSize: "1rem" }}>Detailed Profile Information</p>
@@ -175,11 +204,10 @@ function DirectorsPage() {
           </div>
 
           <div style={{ padding: "40px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(450px, 1fr))", gap: "48px", alignItems: "start" }}>
-            {/* LEFT PROFILE CARD */}
+            
+            {/* LEFT COLUMN: PERSONAL DETAILS */}
             <div>
-              <h2 style={{ marginTop: 0, marginBottom: "24px", fontSize: "1.5rem", fontWeight: "700", color: "#1e293b", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px" }}>
-                Personal Details
-              </h2>
+              <h2 style={{ marginTop: 0, marginBottom: "24px", fontSize: "1.5rem", fontWeight: "700", color: "#1e293b", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px" }}>Personal Details</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px", fontSize: "1.1rem" }}>
                 <p style={{ margin: 0 }}><strong>Name:</strong> <span style={{ color: "#334155" }}>{director.name}</span></p>
                 <p style={{ margin: 0 }}><strong>DIN:</strong> <span style={{ color: "#334155" }}>{director.DIN || "N/A"}</span></p>
@@ -189,11 +217,9 @@ function DirectorsPage() {
               </div>
             </div>
 
-            {/* RIGHT SIDE TABLE PROFILE */}
+            {/* RIGHT COLUMN: CAREER HISTORY */}
             <div>
-              <h2 style={{ marginTop: 0, marginBottom: "24px", fontSize: "1.5rem", fontWeight: "700", color: "#1e293b", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px" }}>
-                Career History
-              </h2>
+              <h2 style={{ marginTop: 0, marginBottom: "24px", fontSize: "1.5rem", fontWeight: "700", color: "#1e293b", borderBottom: "2px solid #f1f5f9", paddingBottom: "12px" }}>Career History</h2>
               <div style={{ overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                   <thead>
@@ -201,49 +227,47 @@ function DirectorsPage() {
                       <th style={{ padding: "12px", color: "#475569", fontWeight: "600" }}>Company</th>
                       <th style={{ padding: "12px", color: "#475569", fontWeight: "600" }}>Role</th>
                       <th style={{ padding: "12px", color: "#475569", fontWeight: "600" }}>Joining</th>
+                      {/* 🔹 NEW COLUMN HEADER FOR RESIGNATION */}
+                      <th style={{ padding: "12px", color: "#475569", fontWeight: "600" }}>Resignation</th>
                       <th style={{ padding: "12px", color: "#475569", fontWeight: "600" }}>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {director.careerHistory?.map((career, idx) => (
-                      <tr key={idx} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                        {/* NO MORE UNDERLINES HERE */}
-                        <td
-                          style={{ 
-                            padding: "14px 12px", 
-                            color: "#2563eb", 
-                            cursor: "pointer", 
-                            fontWeight: "600",
-                            textDecoration: "none" // Force removal
-                          }}
-                          onClick={() => navigate(`/company?name=${encodeURIComponent(career.company)}`, { state: { automatic: true } })}
-                          onMouseEnter={(e) => {
-                            e.target.style.textDecoration = "none"; // Keeps text line off
-                            e.target.style.color = "#1d4ed8"; // Subtle deep blue toggle instead
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.color = "#2563eb";
-                          }}
-                        >
-                          {career.company}
-                        </td>
-                        <td style={{ padding: "14px 12px", color: "#475569" }}>{career.role}</td>
-                        <td style={{ padding: "14px 12px", color: "#475569" }}>{career.joiningDate}</td>
-                        <td style={{ padding: "14px 12px" }}>
-                          <span style={{
-                            padding: "4px 12px", borderRadius: "9999px", fontSize: "0.85rem", fontWeight: "600",
-                            background: (career.status?.toLowerCase() === "active" || career.status?.toLowerCase() === "present") ? "#dcfce7" : "#f1f5f9",
-                            color: (career.status?.toLowerCase() === "active" || career.status?.toLowerCase() === "present") ? "#15803d" : "#475569"
-                          }}>
-                            {career.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                    {getSortedCareerHistory(director.careerHistory).map((career, idx) => {
+                      const isCurrent = career.status?.toLowerCase() === "active" || career.status?.toLowerCase() === "present";
+                      return (
+                        <tr key={idx} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                          <td
+                            style={{ padding: "14px 12px", color: "#2563eb", cursor: "pointer", fontWeight: "600", textDecoration: "none" }}
+                            onClick={() => navigate(`/company?name=${encodeURIComponent(career.company)}`, { state: { automatic: true } })}
+                            onMouseEnter={(e) => e.target.style.color = "#1d4ed8"}
+                            onMouseLeave={(e) => e.target.style.color = "#2563eb"}
+                          >
+                            {career.company}
+                          </td>
+                          <td style={{ padding: "14px 12px", color: "#475569" }}>{career.role}</td>
+                          <td style={{ padding: "14px 12px", color: "#475569" }}>{formatMonthYear(career.joiningDate)}</td>
+                          {/* 🔹 NEW COLUMN RENDER: Shows resignation date formatted or "Present" if active */}
+                          <td style={{ padding: "14px 12px", color: "#475569" }}>
+                            {isCurrent ? "Present" : formatMonthYear(career.resignationDate || career.leavingDate || "N/A")}
+                          </td>
+                          <td style={{ padding: "14px 12px" }}>
+                            <span style={{
+                              padding: "4px 12px", borderRadius: "9999px", fontSize: "0.85rem", fontWeight: "600",
+                              background: isCurrent ? "#dcfce7" : "#f8d0d0",
+                              color: isCurrent ? "#15803d" : "#dc1919"
+                            }}>
+                              {career.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             </div>
+
           </div>
         </div>
       )}
