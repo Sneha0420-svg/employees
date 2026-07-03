@@ -3,76 +3,98 @@ import { Link, useLocation } from "react-router-dom";
 function Navbar() {
   const location = useLocation();
 
-  // Helper helper function to mark active tab styles
+  // Helper function to mark active tab styles
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav style={{
-      background: "#0b1528",
-      padding: "16px 32px",
-      display: "flex",
-      justifyContent: "between",
-      alignItems: "center",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-      fontFamily: "sans-serif",
-      position: "sticky",
-      top: 0,
-      zIndex: 1000
-    }}>
-      {/* Brand Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <span style={{ fontSize: "1.8rem" }}>🏢</span>
-        <Link to="/" style={{ 
-          color: "#ffffff", 
-          textDecoration: "none", 
-          fontSize: "1.4rem", 
-          fontWeight: "700",
-          letterSpacing: "0.5px"
-        }}>
-          Corp<span style={{ color: "#3b82f6" }}>Portal</span>
-        </Link>
-      </div>
+    <nav
+  style={{
+    background: "#0b1528",
+    padding: "16px 32px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
+  }}
+>
+  {/* Left Logo */}
+  <Link
+    to="/"
+    style={{
+      textDecoration: "none",
+      fontSize: "30px",
+      fontWeight: "bold",
+      fontFamily: "Poppins, sans-serif",
+    }}
+  >
+    <span style={{ color: "#ffffff" }}>🏢Corp</span>
+    <span style={{ color: "#3b82f6" }}>Portal</span>
+  </Link>
 
-      {/* Navigation Links Grid */}
-      <div style={{ display: "flex", gap: "24px", marginLeft: "auto" }}>
-        <Link to="/" style={{
-          color: isActive("/") ? "#3b82f6" : "#9ca3af",
-          textDecoration: "none",
-          fontSize: "1rem",
-          fontWeight: "600",
-          transition: "color 0.2s ease",
-          padding: "6px 12px",
-          borderRadius: "4px"
-        }}>
-          Home
-        </Link>
+  {/* Right Menu */}
+  <div style={{ display: "flex", gap: "24px" }}>
+    <Link
+      to="/"
+      style={{
+        color: isActive("/") ? "#3b82f6" : "hsl(0, 0%, 100%)",
+        textDecoration: "none",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      Home
+    </Link>
 
-        <Link to="/company" style={{
-          color: isActive("/company") ? "#3b82f6" : "#9ca3af",
-          textDecoration: "none",
-          fontSize: "1rem",
-          fontWeight: "600",
-          transition: "color 0.2s ease",
-          padding: "6px 12px",
-          borderRadius: "4px"
-        }}>
-          Company Registry
-        </Link>
+    <Link
+      to="/company"
+      style={{
+        color: isActive("/company") ? "#3b82f6" : "hsl(0, 0%, 100%)",
+        textDecoration: "none",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      Company Search
+    </Link>
 
-        <Link to="/director/search" style={{
-          color: isActive("/director/search") || location.pathname.startsWith("/director") ? "#3b82f6" : "#9ca3af",
-          textDecoration: "none",
-          fontSize: "1rem",
-          fontWeight: "600",
-          transition: "color 0.2s ease",
-          padding: "6px 12px",
-          borderRadius: "4px"
-        }}>
-          Director Search
-        </Link>
-      </div>
-    </nav>
+    <Link
+      to="/director/search"
+      style={{
+        color:
+          isActive("/director/search") ||
+          location.pathname.startsWith("/director")
+            ? "#3b82f6"
+            : "hsl(0, 0%, 100%)",
+        textDecoration: "none",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      Director Search
+    </Link>
+
+    <Link
+      to="/login"
+      style={{
+        color: "hsl(0, 0%, 100%)",
+        textDecoration: "none",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      Add Details
+    </Link>
+  </div>
+</nav>
   );
 }
 
 export default Navbar;
+
+
+
+
+
+
+
+
+

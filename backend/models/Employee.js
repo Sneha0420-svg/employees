@@ -35,26 +35,3 @@ const employeeSchema = new mongoose.Schema({
 
 export default mongoose.model("Employee", employeeSchema);
 
-// import mongoose from "mongoose";
-
-// const employeeSchema = new mongoose.Schema({
-//   name: String,
-//   DIN: String,
-
-//   companyDetails: {
-//     companyName: String,
-//     location: String
-//   },
-
-//   careerHistory: [
-//     {
-//       company: String,
-//       role: String,
-//       joiningDate: String,
-//       resigningDate: String,
-//       status: String
-//     }
-//   ]
-// });
-
-// export default mongoose.model("Employee", employeeSchema);

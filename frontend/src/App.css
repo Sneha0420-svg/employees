@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 .dashboard {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f8fafc;
@@ -233,3 +235,147 @@ button {
   padding: 8px;
   border-radius: 5px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ================= ADD DETAILS PAGE ================= */
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  font-family: Arial;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+}
+
+.heading {
+  text-align: center;
+  color: white;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 5px rgba(37,99,235,0.4);
+}
+
+.career-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.career-box {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.add-btn {
+  background: #10b981;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #059669;
+}
+
+.submit-btn {
+  background: #2563eb;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.submit-btn:hover {
+  background: #1d4ed8;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

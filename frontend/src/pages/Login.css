@@ -1,0 +1,78 @@
+body{
+    margin:0;
+    padding:0;
+    font-family:'Poppins',sans-serif;
+    background:#eef5ff;
+}
+
+/* FULL CENTER FIX */
+.login-page{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0b3d91,#42a5f5);
+}
+
+/* CARD */
+.login-card{
+    width:380px;
+    background:white;
+    padding:40px 30px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    text-align:center;
+}
+
+/* ADMIN LOGO */
+.logo{
+    font-size:45px;
+    margin-bottom:10px;
+}
+
+/* TITLE */
+.login-title{
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.login-subtitle{
+    color:#666;
+    margin-bottom:25px;
+    font-size:14px;
+}
+
+/* INPUT */
+.login-input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:2px solid #dbeafe;
+    border-radius:8px;
+    outline:none;
+    transition:.3s;
+}
+
+.login-input:focus{
+    border-color:#1976d2;
+    box-shadow:0 0 8px rgba(25,118,210,.3);
+}
+
+/* BUTTON */
+.login-btn{
+    width:100%;
+    padding:12px;
+    background:#1565c0;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.login-btn:hover{
+    background:#0d47a1;
+}

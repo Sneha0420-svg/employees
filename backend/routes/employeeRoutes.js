@@ -1,6 +1,7 @@
 import express from "express";
 import Employee from "../models/Employee.js";
 
+
 const router = express.Router();
 
 /* ==========================================================================
@@ -160,5 +161,47 @@ router.get("/director/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+/* ==========================================================================
+   ADD NEW EMPLOYEE
+   ========================================================================== */
+router.post("/", async (req, res) => {
+  try {
+    const employee = new Employee({
+      name: req.body.name,
+      DIN: req.body.DIN,
+      gender: req.body.gender,
+      dob: req.body.dob,
+      phone: req.body.phone,
+      email: req.body.email,
+      address: req.body.address,
+      nationality: req.body.nationality,
+      currentDesignation: req.body.currentDesignation,
+      qualification: req.body.qualification,
 
+      companyDetails: {
+        companyName: req.body.companyDetails.companyName,
+        description: req.body.companyDetails.description,
+        industry: req.body.companyDetails.industry,
+        location: req.body.companyDetails.location,
+        cin: req.body.companyDetails.cin,
+        registerNo: req.body.companyDetails.registerNo,
+      },
+
+      careerHistory: req.body.careerHistory,
+    });
+
+    const savedEmployee = await employee.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Employee added successfully",
+      data: savedEmployee,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
 export default router;
