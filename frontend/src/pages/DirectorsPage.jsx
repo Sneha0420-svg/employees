@@ -85,8 +85,10 @@ function DirectorsPage() {
       const matches = employees
         .filter((emp) => emp.name?.toLowerCase().includes(text.toLowerCase()) || emp.DIN?.toLowerCase().includes(text.toLowerCase()))
         .map((emp) => ({ name: emp.name, din: emp.DIN, id: emp._id }));
-      setSuggestions(matches.slice(0, 8));
-      setShowSuggestions(true);
+      const matchedDirectors = matches.slice(0, 8);
+
+setSuggestions(matchedDirectors);
+setShowSuggestions(true);
     } catch (err) {
       console.error("Error loading live director records", err);
     }
@@ -130,7 +132,27 @@ function DirectorsPage() {
               ))}
             </ul>
           )}
+          {showSuggestions && suggestions.length === 0 && query.trim() !== "" && (
+  <div
+    style={{
+      position: "absolute",
+      top: "46px",
+      left: 0,
+      width: "100%",
+      
+      
+      padding: "12px",
+      color: "#dc2626",
+      fontWeight: "400",
+      zIndex: 50,
+      textAlign: "center",
+    }}
+  >
+    Director Not Found
+  </div>
+)}
         </div>
+
         <button onClick={() => searchDirector(query)} style={{ background: "#2563eb", color: "white", border: "none", padding: "10px 24px", borderRadius: "6px", cursor: "pointer" }}>Search</button>
       </div>
 
@@ -172,7 +194,7 @@ function DirectorsPage() {
 
             {/* Bottom Section */}
             <div>
-              <h2 style={{ marginTop: 0, borderBottom: "2px solid #f1f5f9", paddingBottom: "12px" }}>Company Details</h2>
+              <h2 style={{ marginTop: 0, borderBottom: "2px solid #f1f5f9", paddingBottom: "12px" }}>Employeement History</h2>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ background: "#f8fafc" }}>

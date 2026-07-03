@@ -174,7 +174,17 @@ useEffect(() => {
             <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
             <input name="DIN" placeholder="DIN" value={formData.DIN} onChange={handleChange} />
             <input name="gender" placeholder="Gender" value={formData.gender} onChange={handleChange} />
-            <input type="date" name="dob" value={formData.dob} onChange={handleChange} />
+            <input
+  type="text"
+  name="dob"
+  placeholder="Date Of Birth "
+  value={formData.dob}
+  onFocus={(e) => (e.target.type = "date")}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = "text";
+  }}
+  onChange={handleChange}
+/>
             <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
             <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
             <input name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
@@ -190,7 +200,15 @@ useEffect(() => {
 
           <div className="grid">
             <input name="companyName" placeholder="Company Name" value={formData.companyDetails.companyName} onChange={handleCompanyChange} />
-            <input name="description" placeholder="Description" value={formData.companyDetails.description} onChange={handleCompanyChange} />
+    <div className="description-field">
+  <textarea
+    name="description"
+    placeholder="Description"
+    value={formData.companyDetails.description}
+    onChange={handleCompanyChange}
+    className="description-box"
+  />
+</div>
             <input name="industry" placeholder="Industry" value={formData.companyDetails.industry} onChange={handleCompanyChange} />
             <input name="location" placeholder="Location" value={formData.companyDetails.location} onChange={handleCompanyChange} />
             <input name="cin" placeholder="CIN" value={formData.companyDetails.cin} onChange={handleCompanyChange} />
@@ -220,17 +238,39 @@ useEffect(() => {
                   value={career.role}
                   onChange={(e) => handleCareerChange(index, e)} />
 
-                <input type="date" name="joiningDate"
-                  value={career.joiningDate}
-                  onChange={(e) => handleCareerChange(index, e)} />
+                <input
+  type="text"
+  name="joiningDate"
+  placeholder="Joining Date"
+  value={career.joiningDate}
+  onFocus={(e) => (e.target.type = "date")}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = "text";
+  }}
+  onChange={(e) => handleCareerChange(index, e)}
+/>
 
-                <input type="date" name="resigningDate"
-                  value={career.resigningDate}
-                  onChange={(e) => handleCareerChange(index, e)} />
+<input
+  type="text"
+  name="resigningDate"
+  placeholder="Resigning Date"
+  value={career.resigningDate}
+  onFocus={(e) => (e.target.type = "date")}
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = "text";
+  }}
+  onChange={(e) => handleCareerChange(index, e)}
+/>
 
-                <input name="status" placeholder="Status"
-                  value={career.status}
-                  onChange={(e) => handleCareerChange(index, e)} />
+                <select
+  name="status"
+  value={career.status}
+  onChange={(e) => handleCareerChange(index, e)}
+>
+  <option value="">Select Status</option>
+  <option value="Active">Active</option>
+  <option value="Resigned">Resigned</option>
+</select>
               </div>
 
             </div>

@@ -73,16 +73,7 @@ function Navbar() {
       Director Search
     </Link>
 
-    <Link
-      to="/login"
-      style={{
-        color: "hsl(0, 0%, 100%)",
-        textDecoration: "none",
-        fontFamily: "Poppins, sans-serif",
-      }}
-    >
-      Add Details
-    </Link>
+    
   </div>
 </nav>
   );

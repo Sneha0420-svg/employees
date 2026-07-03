@@ -180,3 +180,33 @@ body{
   color: #2c3e50;
   font-size: 16px;
 }
+
+
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.description-field {
+  grid-column: 1 / -1;   /* Full row */
+}
+
+.description-box {
+  width: 100%;
+  min-height: 180px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.description-box:focus {
+  border-color: #2563eb;
+}

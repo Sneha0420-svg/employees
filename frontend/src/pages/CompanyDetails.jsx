@@ -84,9 +84,12 @@ function CompanyDetails() {
           }
         }
       });
+      
 
-      setSuggestions(Array.from(uniqueCompanies.values()).slice(0, 8));
-      setShowSuggestions(true);
+     const matchedCompanies = Array.from(uniqueCompanies.values()).slice(0, 8);
+
+setSuggestions(matchedCompanies);
+setShowSuggestions(true);
     } catch (err) {
       console.error("Error loading live suggestions", err);
     }
@@ -159,12 +162,15 @@ function CompanyDetails() {
 // if (companyFound || companyData.activeEmployees.length > 0) {
 
 // To this:
-if (companyData) { 
-  if (!companyData.name) companyData.name = text;
+companyData.activeEmployees.sort((a, b) => {
+  return new Date(b.appointmentDate) - new Date(a.appointmentDate);
+});
+if (companyFound || companyData.activeEmployees.length > 0) {
   setSelectedCompany(companyData);
+  setError(null);
 } else {
-  setError("No company matching that name or CIN was found.");
   setSelectedCompany(null);
+  setError("Company Not Found");
 }
     } catch (err) {
       console.error(err);
@@ -226,7 +232,32 @@ if (companyData) {
                 </li>
               ))}
             </ul>
+            
           )}
+          {showSuggestions && suggestions.length > 0 && (
+  <ul>
+    ...
+  </ul>
+)}
+
+{showSuggestions && suggestions.length === 0 && query.trim() !== "" && (
+  <div
+    style={{
+      position: "absolute",
+      top: "46px",
+      left: 0,
+      width: "100%",
+      
+      padding: "12px",
+      textAlign: "center",
+      color: "#dc2626",
+      fontWeight: "400",
+      zIndex: 100,
+    }}
+  >
+    Company Not Found
+  </div>
+)}
         </div>
         
         <button 
