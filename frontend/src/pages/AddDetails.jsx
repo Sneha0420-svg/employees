@@ -173,7 +173,16 @@ useEffect(() => {
           <div className="grid">
             <input name="name" placeholder="Name" value={formData.name} onChange={handleChange} />
             <input name="DIN" placeholder="DIN" value={formData.DIN} onChange={handleChange} />
-            <input name="gender" placeholder="Gender" value={formData.gender} onChange={handleChange} />
+            <select
+  name="gender"
+  value={formData.gender}
+  onChange={handleChange}
+>
+  <option value="">Select Gender</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
             <input
   type="text"
   name="dob"
@@ -188,7 +197,19 @@ useEffect(() => {
             <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
             <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
             <input name="address" placeholder="Address" value={formData.address} onChange={handleChange} />
-            <input name="nationality" placeholder="Nationality" value={formData.nationality} onChange={handleChange} />
+            <select
+  name="nationality"
+  value={formData.nationality}
+  onChange={handleChange}
+>
+  <option value="">Select Nationality</option>
+  <option value="Indian">Indian</option>
+  <option value="American">American</option>
+  <option value="British">British</option>
+  <option value="Canadian">Canadian</option>
+  <option value="Australian">Australian</option>
+  <option value="Other">Other</option>
+</select>
             <input name="currentDesignation" placeholder="Designation" value={formData.currentDesignation} onChange={handleChange} />
             <input name="qualification" placeholder="Qualification" value={formData.qualification} onChange={handleChange} />
           </div>
