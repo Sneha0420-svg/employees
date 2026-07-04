@@ -78,7 +78,7 @@ useEffect(() => {
     });
   };
 
-  // ================= CAREER CHANGE (MULTI INDEX) =================
+  // ================= CAREER CHANGE (MULTI INDEX) ===================
   const handleCareerChange = (index, e) => {
     const updatedCareer = [...formData.careerHistory];
 
